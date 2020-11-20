@@ -1,32 +1,79 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <Navigation></Navigation>
+    <div id="main" ref="main" class="main">
+      <UpHeader></UpHeader>
+      <router-view />
     </div>
-    <router-view />
+    <div
+      class="shadow-cover"
+      :style="{ display: coverDisplay }"
+      @click="closeNav()"
+    ></div>
+    <Modal v-if="$store.state.isModalOpen">
+      <template v-slot:header>
+        <h3>
+          경고!
+          <i class="closeModalBtn fa fa-times" @click="showModal = false"></i>
+        </h3>
+      </template>
+      <template v-slot:body>무언가를 입력하세요.</template>
+      <template v-slot:footer></template>
+    </Modal>
   </div>
 </template>
 
+<script>
+import UpHeader from '@/components/Header.vue';
+import Navigation from '@/components/Navigation.vue';
+import Modal from '@/components/common/Modal.vue';
+
+export default {
+  data() {
+    return {};
+  },
+  components: {
+    UpHeader,
+    Navigation,
+    Modal,
+  },
+  methods: {},
+  computed: {
+    isNavOpen() {
+      const isOpen = this.$store.state.isNavOpen;
+      return isOpen;
+    },
+    coverDisplay() {
+      return this.$store.state.isNavOpen ? 'block' : 'none';
+    },
+  },
+  methods: {
+    closeNav() {
+      this.$store.commit('navClose');
+    },
+  },
+};
+</script>
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+@import './css/common.css';
+#main {
+  transition: margin-left 0.5s;
 }
-
-#nav {
-  padding: 30px;
+.shadow-cover {
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: background-color 0.5s;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
 }
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+@font-face {
+  font-family: 'Cafe24Dangdanghae';
+  src: local('Cafe24Dangdanghae'),
+    url(./fonts/Cafe24Dangdanghae.ttf) format('truetype');
 }
 </style>

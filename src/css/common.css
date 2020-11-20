@@ -1,0 +1,41 @@
+body{
+    margin: 0;
+    background-color: #F6F6F6;
+    transition: background-color .5s;
+}
+.main{
+}
+a {
+    text-decoration: none;
+    color: #555;
+}
+a:link {
+    text-decoration: none;
+}
+a:active {
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: none;
+}
+*:after, *:before{
+    box-sizing: border-box;
+    font-family: 'Spoqa Han Sans', 'Sans-serif';
+}
+.vertical-middle {
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+.contents-root{
+    padding-top: 50px;
+}
+p{
+    margin: 0;
+}
+.text-center{
+    text-align: center;
+}
+.text-left{
+    text-align: left;
+}
