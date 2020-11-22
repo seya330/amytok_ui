@@ -13,6 +13,7 @@
         v-for="chatRoom in chatRoomList"
         :key="chatRoom.chatRoomId"
         :chatRoomItem="chatRoom"
+        :ref="chatRoom.chatRoomId"
       ></ChatRoomItem>
     </div>
     <ChatInviteModal
@@ -40,12 +41,35 @@ export default {
     ChatInviteModal,
   },
   async mounted() {
+    this.$store.commit('spinnerOn');
     const { data } = await authInstance.get('/chat/groupChat/chatRoomList');
     this.chatRoomList = data;
+    await ws.wsConnect({ chatType: 'GROUPCHAT' }, true);
+    ws.subscribe(
+      '/public.' + this.$store.state.uniqId + '.message',
+      ({ body }) => {
+        body = JSON.parse(body);
+        let index = this.chatRoomList.findIndex(item => {
+          return item.chatRoomId === body.chatRoomId;
+        });
+        if (index > -1) {
+          this.chatRoomList[index].unreadCnt++;
+          this.chatRoomList[index].summary = body.messageContents;
+          this.chatRoomList[index].msgRegDate = body.regDate;
+        } else {
+          this.refreshChatRoomList();
+        }
+      },
+    );
+    this.$store.commit('spinnerOff');
   },
   methods: {
     closeModal() {
       this.inviteModalOpen = false;
+    },
+    async refreshChatRoomList() {
+      const { data } = await authInstance.get('/chat/groupChat/chatRoomList');
+      this.chatRoomList = data;
     },
   },
 };

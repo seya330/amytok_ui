@@ -24,4 +24,15 @@ function getFormatDate3(date) {
     date.getMinutes() >= 10 ? date.getMinutes() : '0' + date.getMinutes();
   return hours + '시 ' + minutes + '분';
 }
-export { getFormatDate, getFormatDate2, getFormatDate3 };
+
+function getFormatDate4(date) {
+  //오전|오후 hh12:mi
+  let hour = date.getHours();
+  let prefix = hour < 13 ? '오전 ' : '오후 ';
+  hour = hour < 13 ? hour : hour - 12;
+
+  let minutes =
+    date.getMinutes() >= 10 ? date.getMinutes() : '0' + date.getMinutes();
+  return prefix + hour + ':' + minutes + '';
+}
+export { getFormatDate, getFormatDate2, getFormatDate3, getFormatDate4 };

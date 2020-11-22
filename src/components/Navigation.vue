@@ -1,19 +1,36 @@
 <template>
   <div id="nav" class="nav" ref="nav" :class="isNavOpen ? 'nav-open' : null">
+    <div class="nav-header">
+      <img src="@/assets/amyutok_logo.png" style="width: 40px;" />
+      <span class="closebtn" @click="closeNav">
+        <i class="icon ion-md-close"></i>
+      </span>
+    </div>
     <div class="info">
-      <span v-if="$store.state.isLogin">
+      <div v-if="$store.state.isLogin">
         <i class="icon ion-md-contact"></i>
         <span class="username">{{ $store.state.userId }}</span>
-      </span>
-      <span v-else>
-        <i class="icon ion-md-contact"></i>
-        <router-link to="/login" class="username-link"
-          >로그인해 주세요.</router-link
-        >
-      </span>
-      <span class="closebtn" @click="closeNav"
-        ><i class="icon ion-md-close"></i
-      ></span>
+        <span style="float: right;">
+          <i
+            class="icon ion-ios-log-out"
+            style="font-size: 30px;"
+            @click="$store.commit('logout')"
+          ></i>
+        </span>
+      </div>
+      <div v-else>
+        <span style="display: inline-block;" @click="goSignUp">
+          <i class="icon ion-md-person-add" style="font-size: 35px;"></i>
+          <p
+            style="position: absolute; display: inline; left: 0px; top: 56px; font-size: 5px; margin-left: 11px;"
+          >
+            회원가입
+          </p>
+        </span>
+        <router-link to="/login" class="username-link">
+          로그인해 주세요.
+        </router-link>
+      </div>
     </div>
     <div class="link-wrapper">
       <router-link to="/">
@@ -46,6 +63,9 @@ export default {
   methods: {
     closeNav() {
       this.$store.commit('navClose');
+    },
+    goSignUp() {
+      this.$router.push('/signUp');
     },
   },
   computed: {
@@ -115,6 +135,12 @@ export default {
   margin-right: 10px;
   vertical-align: middle;
   font-size: 40px;
+}
+.nav-header {
+  box-sizing: border-box;
+  height: 40px;
+  background-color: #546fc4;
+  border-bottom: 1px solid #97969663;
 }
 
 @media screen and (max-height: 450px) {

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import ws from '@/api/websocket';
+import router from '@/router/index';
 Vue.use(Vuex);
 
 import { getToken } from '@/api/auth';
@@ -69,6 +70,15 @@ export default new Vuex.Store({
     },
     spinnerOff(state) {
       state.isSpinnerView = false;
+    },
+    logout(state) {
+      deleteCookie('amyutok_auth');
+      deleteCookie('amyutok_user');
+      deleteCookie('amyutok_uniqId');
+      deleteCookie('amyutok_isLogin');
+      this.commit('loginInfoRefresh');
+      this.commit('navClose');
+      router.push('/');
     },
   },
   actions: {

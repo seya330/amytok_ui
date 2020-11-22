@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import { getFormatDate4 } from '@/utils/dateUtil';
 export default {
   created() {},
   props: {
@@ -39,13 +40,7 @@ export default {
     },
     regDateStr() {
       const date = new Date(this.chatItem.sendDate);
-      let dateStr = '';
-      const hour = date.getHours();
-
-      dateStr += hour < 13 ? '오전 ' : '오후 ';
-      dateStr += hour < 13 ? hour : hour - 12;
-      dateStr += ':' + date.getMinutes();
-      return dateStr;
+      return getFormatDate4(date);
     },
   },
 };

@@ -32,6 +32,10 @@ const router = new VueRouter({
       component: () => import('@/views/RandomChat.vue'),
     },
     {
+      path: '/signUp',
+      component: () => import('@/views/SignUp.vue'),
+    },
+    {
       path: '*',
       component: () => import('@/views/PageNotFound.vue'),
     },
@@ -40,11 +44,13 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   store.commit('navClose');
+  store.commit('spinnerOff');
   if (from.path == '/randomChat') {
     ws.disconnect();
   }
   if (to.meta.auth && !store.state.isLogin) {
-    next('/');
+    store.commit('modalOpen', '로그인이 필요합니다.');
+    next('/login');
     return;
   }
   next();

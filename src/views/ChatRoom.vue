@@ -24,7 +24,8 @@ export default {
   async created() {},
   async mounted() {
     chatRoomScript.chatBoxSizeFix();
-    await ws.wsConnect({ chatType: 'GROUPCHAT' });
+    this.$store.commit('spinnerOn');
+    await ws.wsConnect({ chatType: 'GROUPCHAT' }, true);
     chatRoomScript.subChatRoom(this.chatRoomId, this);
     this.chatItemList = await chatRoomScript.getMessageListInit(
       this,
@@ -40,6 +41,7 @@ export default {
       }
       chatRoomScript.scrollBottom();
     });
+    this.$store.commit('spinnerOff');
   },
   updated() {},
   components: {
@@ -65,6 +67,7 @@ export default {
       this.chatMessage = '';
     },
     async chatBoxScroll() {
+      this.$store.commit('spinnerOn');
       if (document.getElementsByClassName('chat-box')[0].scrollTop == 0) {
         if (this.viewingPageNo + 1 > this.maxPageNo) {
         } else {
@@ -83,6 +86,7 @@ export default {
           });
         }
       }
+      this.$store.commit('spinnerOff');
     },
   },
   watch: {

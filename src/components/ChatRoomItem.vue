@@ -32,7 +32,7 @@
 import {
   getFormatDate,
   getFormatDate2,
-  getFormatDate3,
+  getFormatDate4,
 } from '@/utils/dateUtil';
 export default {
   props: {
@@ -61,7 +61,7 @@ export default {
       if (today.getTime() - msgDate.getTime() >= 86400000) {
         return getFormatDate2(msgDate);
       } else {
-        return getFormatDate3(msgDate);
+        return getFormatDate4(msgDate);
       }
     },
   },
