@@ -4,15 +4,17 @@
       <div class="modal-wrapper">
         <div class="modal-container">
           <div class="modal-header">
-            <slot name="header">
-              default header
-            </slot>
-            <i class="icon ion-md-close"></i>
+            <h4 style="display: inline-block;">
+              알림
+            </h4>
+            <i
+              class="icon ion-md-close"
+              @click="$store.commit('modalClose')"
+              style="float: right;"
+            ></i>
           </div>
           <div class="modal-body">
-            <slot name="body">
-              default body
-            </slot>
+            {{ $store.state.alertMessage }}
           </div>
 
           <div class="modal-footer">
@@ -34,7 +36,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .modal-mask {
   position: fixed;
   z-index: 9998;
@@ -55,7 +57,7 @@ export default {
 .modal-container {
   width: 300px;
   margin: 0px auto;
-  border-radius: 2px;
+  border-radius: 10px;
   background-color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
@@ -64,8 +66,8 @@ export default {
 }
 
 .modal-header {
-  background-color: #546fc4;
-  padding: 5px 10px 5px 10px;
+  /* background-color: #546fc4; */
+  padding: 20px;
 }
 
 .modal-header h3 {
@@ -73,7 +75,7 @@ export default {
 }
 
 .modal-body {
-  padding: 20px 30px;
+  padding: 20px;
 }
 
 .modal-default-button {

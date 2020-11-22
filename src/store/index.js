@@ -24,6 +24,8 @@ export default new Vuex.Store({
     uniqId: getUniqIdFromCookie() || '',
     isNavOpen: false,
     isModalOpen: false,
+    alertMessage: '',
+    isSpinnerView: false,
   },
   mutations: {
     navOpen(state) {
@@ -32,10 +34,12 @@ export default new Vuex.Store({
     navClose(state) {
       state.isNavOpen = false;
     },
-    modalOpen(state) {
+    modalOpen(state, message) {
+      state.alertMessage = message;
       state.isModalOpen = true;
     },
     modalClose(state) {
+      state.alertMessage = '';
       state.isModalOpen = false;
     },
     setToken(state, token) {
@@ -53,6 +57,19 @@ export default new Vuex.Store({
     setStompClient(state, stompClient) {
       state.stompClient = stompClient;
     },
+    loginInfoRefresh(state) {
+      state.userId = getUserFromCookie() || '';
+      state.token = getAuthFromCookie() || '';
+      state.isLogin = getIsLoginCookie() || false;
+      state.uniqId = getUniqIdFromCookie() || '';
+      state.stompClient = null;
+    },
+    spinnerOn(state) {
+      state.isSpinnerView = true;
+    },
+    spinnerOff(state) {
+      state.isSpinnerView = false;
+    },
   },
   actions: {
     async login({ commit }, userData) {
@@ -65,7 +82,6 @@ export default new Vuex.Store({
       saveAuthToCookie(data.token);
       saveUserToCookie(data.userId);
       saveUniqIdToCookie(data.uniqId);
-      console.log(1111111111);
       // const stomp = await ws.wsConnect();
       //commit('setStompClient', stomp);
     },

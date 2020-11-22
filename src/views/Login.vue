@@ -51,7 +51,6 @@ export default {
         });
         this.$router.push('/');
       } catch (error) {
-        console.log(error.response);
         if (error.response.status == 401) {
           switch (error.response.data) {
             case 'INVALID_ID':

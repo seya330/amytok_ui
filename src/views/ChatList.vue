@@ -3,7 +3,10 @@
     <div class="chat-list-header">
       <!-- <span class="font-size-big vertical-middle">채팅방</span> -->
       <span class="vertical-middle invite-text">초대하기</span>
-      <i class="icon ion-ios-search vertical-middle srch-btn"></i>
+      <i
+        class="icon ion-ios-search vertical-middle srch-btn"
+        @click="inviteModalOpen = true"
+      ></i>
     </div>
     <div class="chat-list-content">
       <ChatRoomItem
@@ -12,6 +15,10 @@
         :chatRoomItem="chatRoom"
       ></ChatRoomItem>
     </div>
+    <ChatInviteModal
+      @closeModal="closeModal"
+      v-if="inviteModalOpen"
+    ></ChatInviteModal>
   </div>
 </template>
 
@@ -19,19 +26,27 @@
 import ChatRoomItem from '@/components/ChatRoomItem.vue';
 import { authInstance } from '@/api/httpUtil';
 import ws from '@/api/websocket';
+import ChatInviteModal from '@/components/ChatInviteModal.vue';
+
 export default {
   data() {
     return {
       chatRoomList: [],
+      inviteModalOpen: false,
     };
   },
   components: {
     ChatRoomItem,
+    ChatInviteModal,
   },
-  methods: {},
   async mounted() {
     const { data } = await authInstance.get('/chat/groupChat/chatRoomList');
     this.chatRoomList = data;
+  },
+  methods: {
+    closeModal() {
+      this.inviteModalOpen = false;
+    },
   },
 };
 </script>

@@ -10,14 +10,15 @@ const ChatRoom = {
     const chatBox = document.getElementsByClassName('chat-box')[0];
     chatBox.style.height = window.innerHeight - 50 - 40 + 'px';
   },
-  async getMessageList(chatRoomId) {
+  async getMessageListInit(vm) {
     const { data } = await authInstance.get('/chat/groupChat/chatList', {
       params: {
         readYn: 'Y',
-        chatRoomId: chatRoomId,
+        chatRoomId: vm.chatRoomId,
+        'pagingVO.orderBy': 'ASC',
       },
     });
-
+    vm.maxPageNo = data.pagingVO.maxPageNo;
     return data.messageList;
   },
   sendMessage(messageContents, chatRoomId) {
@@ -30,8 +31,24 @@ const ChatRoom = {
       let data = JSON.parse(body);
       if (data.chatRoomId == chatRoomId) {
         vm.chatItemList.push(data);
+        vm.$nextTick(() => {
+          const chatBox = document.getElementsByClassName('chat-box')[0];
+          chatBox.scrollTop = chatBox.scrollHeight;
+        });
       }
     });
+  },
+  async getMessageList(vm) {
+    const { data } = await authInstance.get('/chat/groupChat/chatList', {
+      params: {
+        readYn: 'Y',
+        chatRoomId: vm.chatRoomId,
+        'pagingVO.maxPageNo': vm.maxPageNo,
+        'pagingVO.pageNo': vm.viewingPageNo,
+        'pagingVO.orderBy': 'DESC',
+      },
+    });
+    return data.messageList;
   },
 };
 

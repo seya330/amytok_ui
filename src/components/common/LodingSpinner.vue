@@ -10,10 +10,11 @@ export default {};
 
 <style scoped>
 .spinner-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 240px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
 }
 .spinner {
   width: 50px;
@@ -23,6 +24,8 @@ export default {};
   border-bottom: 5px solid #fe9616;
   animation: spin 1s linear infinite;
   position: relative;
+  margin-top: calc(50vh - 25px);
+  margin-left: calc(50vw - 25px);
 }
 @keyframes spin {
   from {

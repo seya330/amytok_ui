@@ -11,15 +11,10 @@
       @click="closeNav()"
     ></div>
     <Modal v-if="$store.state.isModalOpen">
-      <template v-slot:header>
-        <h3>
-          경고!
-          <i class="closeModalBtn fa fa-times" @click="showModal = false"></i>
-        </h3>
-      </template>
-      <template v-slot:body>무언가를 입력하세요.</template>
+      <template v-slot:body>{{ $store.state.alertMessage }}</template>
       <template v-slot:footer></template>
     </Modal>
+    <loadingSpinner v-if="$store.state.isSpinnerView"></loadingSpinner>
   </div>
 </template>
 
@@ -27,6 +22,7 @@
 import UpHeader from '@/components/Header.vue';
 import Navigation from '@/components/Navigation.vue';
 import Modal from '@/components/common/Modal.vue';
+import loadingSpinner from '@/components/common/LodingSpinner.vue';
 
 export default {
   data() {
@@ -36,6 +32,7 @@ export default {
     UpHeader,
     Navigation,
     Modal,
+    loadingSpinner,
   },
   methods: {},
   computed: {

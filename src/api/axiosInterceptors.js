@@ -1,4 +1,6 @@
 import store from '@/store/index';
+import { deleteCookie, setIsLoginCookie } from '@/utils/cookies';
+import router from '@/router/index';
 export function setInterceptors(instance) {
   // Add a request interceptor
   instance.interceptors.request.use(
@@ -7,7 +9,6 @@ export function setInterceptors(instance) {
       return config;
     },
     function(error) {
-      // Do something with request error
       return Promise.reject(error);
     },
   );
@@ -15,13 +16,18 @@ export function setInterceptors(instance) {
   // Add a response interceptor
   instance.interceptors.response.use(
     function(response) {
-      // Any status code that lie within the range of 2xx cause this function to trigger
-      // Do something with response data
       return response;
     },
     function(error) {
-      // Any status codes that falls outside the range of 2xx cause this function to trigger
-      // Do something with response error
+      if (error.response.data == 'EXPIRE TOKEN') {
+        deleteCookie('amyutok_auth');
+        deleteCookie('amyutok_user');
+        deleteCookie('amyutok_uniqId');
+        deleteCookie('amyutok_isLogin');
+        router.push('/');
+        store.commit('loginInfoRefresh');
+        store.commit('modalOpen', '로그인 시간이 만료 되었습니다.');
+      }
       return Promise.reject(error);
     },
   );

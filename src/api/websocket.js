@@ -3,26 +3,24 @@ import SockJS from 'sockjs-client';
 import { getAuthFromCookie, getUserFromCookie } from '@/utils/cookies';
 import store from '@/store/index';
 const ws = {
-  async wsConnect() {
+  async wsConnect(header, withAuth) {
     if (store.state.stompClient != null) {
       store.state.stompClient.disconnect();
     }
     let url = process.env.VUE_APP_API_URL + 'endPoint';
     var socket = new SockJS(url);
     let stompClient = await Stomp.over(socket);
+    if (withAuth) {
+      header = { 'auth-token': store.state.token, ...header };
+    }
     return new Promise(function(resolve, reject) {
-      stompClient.connect(
-        { chatType: 'GROUPCHAT', 'auth-token': store.state.token },
-        function(frame) {
-          store.state.stompClient = stompClient;
-          console.log('resolve!!');
-          resolve();
-        },
-      );
+      stompClient.connect(header, function(frame) {
+        store.state.stompClient = stompClient;
+        resolve();
+      });
     });
   },
   subscribe(location, callback) {
-    console.log(2);
     store.state.stompClient.subscribe(`/sub${location}`, function(result) {
       callback(result);
     });
@@ -33,6 +31,11 @@ const ws = {
       { 'auth-token': store.state.token },
       JSON.stringify(param),
     );
+  },
+  disconnect() {
+    if (store.state.stompClient != null) {
+      store.state.stompClient.disconnect();
+    }
   },
 };
 

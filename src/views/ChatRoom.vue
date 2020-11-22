@@ -1,14 +1,16 @@
 <template>
   <div class="contents-root">
-    <div class="chat-box">
-      <ChatItem
-        v-for="chatItem in chatItemList"
-        :key="chatItem.messageId"
-        :chatItem="chatItem"
-      ></ChatItem>
+    <div class="chat-box" @scroll="chatBoxScroll()">
+      <div id="chatboxContents">
+        <ChatItem
+          v-for="chatItem in chatItemList"
+          :key="chatItem.messageId"
+          :chatItem="chatItem"
+        ></ChatItem>
+      </div>
     </div>
     <div class="chat-input-wrapper">
-      <input type="text" v-model="chatMessage" />
+      <input id="chatMessage" type="text" v-model="chatMessage" />
       <span class="send-btn" @click="sendMessage">전송</span>
     </div>
   </div>
@@ -19,16 +21,25 @@ import ChatItem from '@/components/ChatItem.vue';
 import chatRoomScript from '@/js/ChatRoom';
 import ws from '@/api/websocket';
 export default {
-  async created() {
-    this.chatItemList = await chatRoomScript.getMessageList(this.chatRoomId);
-  },
+  async created() {},
   async mounted() {
     chatRoomScript.chatBoxSizeFix();
-    chatRoomScript.scrollBottom();
-    console.log('wsconnect start');
-    await ws.wsConnect();
-    console.log('wsconnect end');
+    await ws.wsConnect({ chatType: 'GROUPCHAT' });
     chatRoomScript.subChatRoom(this.chatRoomId, this);
+    this.chatItemList = await chatRoomScript.getMessageListInit(
+      this,
+      this.chatRoomId,
+    );
+    this.$nextTick(() => {
+      chatRoomScript.scrollBottom();
+      if (
+        document.getElementById('chatboxContents').clientHeight <
+        document.getElementsByClassName('chat-box')[0].clientHeight
+      ) {
+        this.chatBoxScroll();
+      }
+      chatRoomScript.scrollBottom();
+    });
   },
   updated() {},
   components: {
@@ -39,12 +50,39 @@ export default {
       chatRoomId: this.$route.params.chatRoomId,
       chatItemList: [],
       chatMessage: '',
+      viewingPageNo: 1,
+      maxPageNo: 0,
     };
   },
   methods: {
     sendMessage() {
+      document.getElementById('chatMessage').focus();
+      if (this.chatMessage == '') {
+        alert('메세지를 입력해 주세요');
+        return;
+      }
       chatRoomScript.sendMessage(this.chatMessage, this.chatRoomId);
       this.chatMessage = '';
+    },
+    async chatBoxScroll() {
+      if (document.getElementsByClassName('chat-box')[0].scrollTop == 0) {
+        if (this.viewingPageNo + 1 > this.maxPageNo) {
+        } else {
+          this.viewingPageNo++;
+          let originHeight = document.getElementById('chatboxContents')
+            .clientHeight;
+          let temp = await chatRoomScript.getMessageList(this);
+          let temp2 = temp.concat(this.chatItemList);
+          this.chatItemList = temp2;
+
+          this.$nextTick(() => {
+            let changedHeight = document.getElementById('chatboxContents')
+              .clientHeight;
+            document.getElementsByClassName('chat-box')[0].scrollTop =
+              changedHeight - originHeight;
+          });
+        }
+      }
     },
   },
   watch: {
@@ -52,7 +90,7 @@ export default {
       const chatBoxa = document.getElementsByClassName('chat-box')[0];
       this.$nextTick(() => {
         // Scroll Down
-        chatRoomScript.scrollBottom();
+        //chatRoomScript.scrollBottom();
       });
     },
   },

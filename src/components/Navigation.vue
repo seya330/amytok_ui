@@ -19,8 +19,11 @@
       <router-link to="/">
         <div><i class="icon ion-ios-home"></i>HOME</div>
       </router-link>
-      <router-link to="/login">
+      <router-link to="/login" v-if="!$store.state.isLogin">
         <div><i class="icon ion-md-log-in"></i>Login</div>
+      </router-link>
+      <router-link to="/randomChat">
+        <div><i class="icon ion-ios-chatboxes"></i>Random Chatting</div>
       </router-link>
       <router-link to="/chatlist">
         <div><i class="icon ion-ios-chatboxes"></i>Messenger</div>

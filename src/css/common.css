@@ -18,9 +18,18 @@ a:active {
 a:hover {
     text-decoration: none;
 }
+h4{
+    margin: 0;
+}
+@font-face {
+    font-family: 'Jal';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10-21@1.0/Jal_Onuel.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
 *:after, *:before{
     box-sizing: border-box;
-    font-family: 'Spoqa Han Sans', 'Sans-serif';
+    font-family: 'Jal', 'Spoqa Han Sans', 'Sans-serif';
 }
 .vertical-middle {
     position: absolute;

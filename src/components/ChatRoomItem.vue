@@ -9,11 +9,11 @@
       </div>
 
       <div class="grid-name">
-        <p class="vertical-middle">{{ joinnerListStr }}</p>
+        <p class="vertical-middle ellipses">{{ joinnerListStr }}</p>
       </div>
 
       <div class="grid-date">
-        <p class="vertical-middle">14 Dec</p>
+        <p class="vertical-middle" style="font-size: 12px;">{{ msgDateStr }}</p>
       </div>
 
       <div class="grid-content">
@@ -29,7 +29,11 @@
 </template>
 
 <script>
-// import router from '@/router/index';
+import {
+  getFormatDate,
+  getFormatDate2,
+  getFormatDate3,
+} from '@/utils/dateUtil';
 export default {
   props: {
     chatRoomItem: {
@@ -50,6 +54,15 @@ export default {
         str += this.chatRoomItem.joinnerList[joinner].userId;
       }
       return str;
+    },
+    msgDateStr() {
+      let msgDate = new Date(this.chatRoomItem.msgRegDate);
+      let today = new Date(getFormatDate(new Date()) + ' 23:59:59');
+      if (today.getTime() - msgDate.getTime() >= 86400000) {
+        return getFormatDate2(msgDate);
+      } else {
+        return getFormatDate3(msgDate);
+      }
     },
   },
 };
@@ -113,5 +126,10 @@ export default {
 }
 .message-summary {
   color: #555555c7;
+}
+.ellipses {
+  width: 100%;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 </style>
