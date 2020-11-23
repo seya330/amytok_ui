@@ -22,8 +22,16 @@
         <span class="send-btn" @click="sendMessage">전송</span>
       </template>
       <template v-else>
-        <div class="connect-btn" @click="findRanChatUser">
+        <div class="connect-btn" @click="findRanChatUser" v-if="!isWaiting">
           상대 찾기..
+        </div>
+        <div
+          class="connect-btn"
+          @click="cancelWaiting"
+          v-else
+          style="z-index: 9999 !important;"
+        >
+          취소
         </div>
       </template>
     </div>
@@ -41,6 +49,7 @@ export default {
       messageItemList: [],
       chatMessage: '',
       isConnected: false,
+      isWaiting: false,
       chatRoomId: '',
       sessionId: '',
       viewportUtilV: viewportUtil,
@@ -48,6 +57,9 @@ export default {
   },
   async created() {},
   async mounted() {
+    this.sessionId = Math.random()
+      .toString(36)
+      .substring(2);
     viewportUtil.chatBoxSizeFix();
     window.visualViewport.addEventListener(
       'resize',
@@ -82,32 +94,50 @@ export default {
     async findRanChatUser() {
       this.messageItemList = [];
       this.$store.commit('spinnerOn');
-      let data = await randomChat.findRanChatUser(this);
-      this.chatRoomId = data.chatRoomId;
-      this.sessionId = data.sessionId;
-      await ws.wsConnect(
-        { chatType: 'RANDOM', chatRoomId: this.chatRoomId },
-        false,
-      );
-      await ws.subscribe(`/chat/${data.chatRoomId}`, result => {
-        let { body } = result;
-        body = JSON.parse(body);
+      this.isWaiting = true;
 
-        if (body.messageType == 'CHAT') {
-          this.messageItemList.push(body);
-        } else if (body.messageType == 'DISCONNECTED') {
-          body.message = '상대방이 접속을 종료 하였습니다.';
-          this.messageItemList.push(body);
-          this.isConnected = false;
-          ws.disconnect();
+      try {
+        let data = await randomChat.findRanChatUser(this);
+        this.chatRoomId = data.chatRoomId;
+        this.sessionId = data.sessionId;
+        if (data.responseResult == 'CANCEL') {
+          this.$store.commit('modalOpen', '취소되었습니다.');
+          return;
         }
-        this.$nextTick(() => {
-          const chatBox = document.getElementsByClassName('chat-box')[0];
-          chatBox.scrollTop = chatBox.scrollHeight;
+        await ws.wsConnect(
+          { chatType: 'RANDOM', chatRoomId: this.chatRoomId },
+          false,
+        );
+        await ws.subscribe(`/chat/${data.chatRoomId}`, result => {
+          let { body } = result;
+          body = JSON.parse(body);
+
+          if (body.messageType == 'CHAT') {
+            this.messageItemList.push(body);
+          } else if (body.messageType == 'DISCONNECTED') {
+            body.message = '상대방이 접속을 종료 하였습니다.';
+            this.messageItemList.push(body);
+            this.isConnected = false;
+            ws.disconnect();
+          }
+          this.$nextTick(() => {
+            const chatBox = document.getElementsByClassName('chat-box')[0];
+            chatBox.scrollTop = chatBox.scrollHeight;
+          });
         });
-      });
-      this.$store.commit('spinnerOff');
-      this.isConnected = true;
+        this.isConnected = true;
+        this.isWaiting = false;
+      } catch (error) {
+        if (error.response.status == 408) {
+          this.$store.commit('modalOpen', '대화상대를 찾는데 실패하였습니다.');
+        }
+      } finally {
+        this.isWaiting = false;
+        this.$store.commit('spinnerOff');
+      }
+    },
+    async cancelWaiting() {
+      await randomChat.cancelWaiting(this);
     },
   },
 };
