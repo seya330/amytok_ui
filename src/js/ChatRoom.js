@@ -6,10 +6,6 @@ const ChatRoom = {
     const chatBox = document.getElementsByClassName('chat-box')[0];
     chatBox.scrollTop = chatBox.scrollHeight;
   },
-  chatBoxSizeFix() {
-    const chatBox = document.getElementsByClassName('chat-box')[0];
-    chatBox.style.height = window.innerHeight - 50 - 40 + 'px';
-  },
   async getMessageListInit(vm) {
     const { data } = await authInstance.get('/chat/groupChat/chatList', {
       params: {

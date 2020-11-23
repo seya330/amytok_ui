@@ -10,7 +10,13 @@
       </div>
     </div>
     <div class="chat-input-wrapper">
-      <input id="chatMessage" type="text" v-model="chatMessage" />
+      <input
+        id="chatMessage"
+        type="text"
+        v-model="chatMessage"
+        @focus="viewportUtilV.fixIosWindowScroll"
+        @blur="viewportUtilV.removeFixIosWindowScroll"
+      />
       <span class="send-btn" @click="sendMessage">전송</span>
     </div>
   </div>
@@ -20,10 +26,15 @@
 import ChatItem from '@/components/ChatItem.vue';
 import chatRoomScript from '@/js/ChatRoom';
 import ws from '@/api/websocket';
+import viewportUtil from '@/utils/viewportUtil';
 export default {
   async created() {},
   async mounted() {
-    chatRoomScript.chatBoxSizeFix();
+    window.visualViewport.addEventListener(
+      'resize',
+      viewportUtil.chatBoxSizeFix,
+    );
+    viewportUtil.chatBoxSizeFix();
     this.$store.commit('spinnerOn');
     await ws.wsConnect({ chatType: 'GROUPCHAT' }, true);
     chatRoomScript.subChatRoom(this.chatRoomId, this);
@@ -43,7 +54,12 @@ export default {
     });
     this.$store.commit('spinnerOff');
   },
-  updated() {},
+  beforeDestroy() {
+    window.visualViewport.removeEventListener(
+      'resize',
+      viewportUtil.chatBoxSizeFix,
+    );
+  },
   components: {
     ChatItem,
   },
@@ -54,6 +70,7 @@ export default {
       chatMessage: '',
       viewingPageNo: 1,
       maxPageNo: 0,
+      viewportUtilV: viewportUtil,
     };
   },
   methods: {

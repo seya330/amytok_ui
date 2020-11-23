@@ -12,7 +12,13 @@
     </div>
     <div class="chat-input-wrapper">
       <template v-if="isConnected">
-        <input id="chatMessage" type="text" v-model="chatMessage" />
+        <input
+          id="chatMessage"
+          type="text"
+          v-model="chatMessage"
+          @focus="viewportUtilV.fixIosWindowScroll"
+          @blur="viewportUtilV.removeFixIosWindowScroll"
+        />
         <span class="send-btn" @click="sendMessage">전송</span>
       </template>
       <template v-else>
@@ -28,6 +34,7 @@
 import randomChat from '@/js/RandomChat';
 import ws from '@/api/websocket';
 import messageItem from '@/components/RanChatMessageItem';
+import viewportUtil from '@/utils/viewportUtil';
 export default {
   data() {
     return {
@@ -36,11 +43,22 @@ export default {
       isConnected: false,
       chatRoomId: '',
       sessionId: '',
+      viewportUtilV: viewportUtil,
     };
   },
   async created() {},
   async mounted() {
-    randomChat.chatBoxSizeFix();
+    viewportUtil.chatBoxSizeFix();
+    window.visualViewport.addEventListener(
+      'resize',
+      viewportUtil.chatBoxSizeFix,
+    );
+  },
+  beforeDestroy() {
+    window.visualViewport.removeEventListener(
+      'resize',
+      viewportUtil.chatBoxSizeFix,
+    );
   },
   updated() {},
   components: {
@@ -83,6 +101,10 @@ export default {
           this.isConnected = false;
           ws.disconnect();
         }
+        this.$nextTick(() => {
+          const chatBox = document.getElementsByClassName('chat-box')[0];
+          chatBox.scrollTop = chatBox.scrollHeight;
+        });
       });
       this.$store.commit('spinnerOff');
       this.isConnected = true;
