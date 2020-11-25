@@ -52,7 +52,7 @@ export default {
         this.$router.push('/');
       } catch (error) {
         if (error.response.status == 401) {
-          switch (error.response.data) {
+          switch (error.response.data.loginResultType) {
             case 'INVALID_ID':
               this.errorMsg = 'ID가 없습니다.';
               break;

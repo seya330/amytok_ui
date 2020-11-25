@@ -16,6 +16,7 @@
         v-model="chatMessage"
         @focus="viewportUtilV.fixIosWindowScroll"
         @blur="viewportUtilV.removeFixIosWindowScroll"
+        @keyup.enter="sendMessage"
       />
       <span class="send-btn" @click="sendMessage">전송</span>
     </div>
