@@ -13,6 +13,7 @@
           class="login-input"
           placeholder="ID를 입력하세요."
           v-model="userId"
+          autocomplete="off"
         />
 
         <input

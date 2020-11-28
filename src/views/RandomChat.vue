@@ -19,6 +19,7 @@
           @focus="viewportUtilV.fixIosWindowScroll"
           @blur="viewportUtilV.removeFixIosWindowScroll"
           @keyup.enter="sendMessage"
+          autocomplete="off"
         />
         <span class="send-btn" @click="sendMessage">전송</span>
       </template>
@@ -81,7 +82,7 @@ export default {
     sendMessage() {
       document.getElementById('chatMessage').focus();
       if (this.chatMessage == '') {
-        this.$store.commit('modalOpen', '메세지를 입력해 주세요.');
+        this.$store.commit('modalOpen', { message: '메세지를 입력해 주세요.' });
         return;
       }
       ws.sendMessage(`/chat.message/${this.chatRoomId}`, {
@@ -102,7 +103,7 @@ export default {
         this.chatRoomId = data.chatRoomId;
         this.sessionId = data.sessionId;
         if (data.responseResult == 'CANCEL') {
-          this.$store.commit('modalOpen', '취소되었습니다.');
+          this.$store.commit('modalOpen', { message: '취소되었습니다.' });
           return;
         }
         await ws.wsConnect(
@@ -130,7 +131,9 @@ export default {
         this.isWaiting = false;
       } catch (error) {
         if (error.response.status == 408) {
-          this.$store.commit('modalOpen', '대화상대를 찾는데 실패하였습니다.');
+          this.$store.commit('modalOpen', {
+            message: '대화상대를 찾는데 실패하였습니다.',
+          });
         }
       } finally {
         this.isWaiting = false;

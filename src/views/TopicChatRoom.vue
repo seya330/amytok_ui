@@ -26,7 +26,7 @@
 
 <script>
 import ChatItem from '@/components/ChatItem.vue';
-import chatRoomScript from '@/js/ChatRoom';
+import chatRoomScript from '@/js/TopicChatRoom';
 import ws from '@/api/websocket';
 import viewportUtil from '@/utils/viewportUtil';
 export default {
@@ -38,7 +38,7 @@ export default {
     );
     viewportUtil.chatBoxSizeFix();
     this.$store.commit('spinnerOn');
-    await ws.wsConnect({ chatType: 'GROUPCHAT' }, true);
+    await ws.wsConnect({ chatType: 'TOPIC' }, true);
     chatRoomScript.subChatRoom(this.chatRoomId, this);
     this.chatItemList = await chatRoomScript.getMessageListInit(
       this,
@@ -54,6 +54,7 @@ export default {
       }
       chatRoomScript.scrollBottom();
     });
+    console.log(this.chatItemList);
     this.$store.commit('spinnerOff');
   },
   beforeDestroy() {

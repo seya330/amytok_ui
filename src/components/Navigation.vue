@@ -37,13 +37,16 @@
         <div><i class="icon ion-ios-home"></i>HOME</div>
       </router-link>
       <router-link to="/login" v-if="!$store.state.isLogin">
-        <div><i class="icon ion-md-log-in"></i>Login</div>
+        <div><i class="icon ion-md-log-in"></i>로그인</div>
       </router-link>
       <router-link to="/randomChat">
-        <div><i class="icon ion-ios-chatboxes"></i>Random Chatting</div>
+        <div><i class="ion-ios-shuffle"></i>랜덤채팅</div>
       </router-link>
       <router-link to="/chatlist">
-        <div><i class="icon ion-ios-chatboxes"></i>Messenger</div>
+        <div><i class="icon ion-ios-chatboxes"></i>메신저</div>
+      </router-link>
+      <router-link to="/topicChat">
+        <div><i class="icon ion-ios-chatboxes"></i>토픽채팅</div>
       </router-link>
       <router-link to="/">
         <div style=""><i class="icon ion-ios-at"></i>about</div>

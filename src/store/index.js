@@ -27,6 +27,7 @@ export default new Vuex.Store({
     isModalOpen: false,
     alertMessage: '',
     isSpinnerView: false,
+    modalFocusId: '',
   },
   mutations: {
     navOpen(state) {
@@ -35,13 +36,19 @@ export default new Vuex.Store({
     navClose(state) {
       state.isNavOpen = false;
     },
-    modalOpen(state, message) {
-      state.alertMessage = message;
+    modalOpen(state, param) {
+      state.alertMessage = param.message;
+      state.modalFocusId = param.modalFocusId;
       state.isModalOpen = true;
     },
     modalClose(state) {
-      state.alertMessage = '';
       state.isModalOpen = false;
+      state.alertMessage = '';
+      console.log(state.modalFocusId);
+      console.log(document.getElementById(state.modalFocusId));
+      if (document.getElementById(state.modalFocusId))
+        document.getElementById(state.modalFocusId).focus();
+      state.modalFocusId = '';
     },
     setToken(state, token) {
       state.token = token;

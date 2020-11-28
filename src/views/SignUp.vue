@@ -14,6 +14,7 @@
           placeholder="ID를 입력하세요."
           v-model="userId"
           @keyup="isOverlap"
+          autocomplete="off"
         />
         <div
           v-if="overlap"

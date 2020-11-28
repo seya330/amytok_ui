@@ -7,6 +7,8 @@
     <span class="nav-open-icon" @click="openNav">
       <i class="icon ion-md-menu"></i>
     </span>
+
+    <img src="@/assets/amyutok_logo.png" style="height: 50px; float: right;" />
   </header>
 </template>
 
@@ -36,6 +38,7 @@ export default {
   font-size: 35px;
   margin-left: 15px;
   color: white;
+  float: left;
 }
 .header {
   display: block;
@@ -45,6 +48,7 @@ export default {
   font-weight: 400;
   position: fixed;
   z-index: 1;
+  text-align: center;
 }
 .nav-open-opacity {
   opacity: 0.5;

@@ -38,6 +38,7 @@ h4{
 }
 .contents-root{
     padding-top: 50px;
+    overflow-x: hidden;
 }
 p{
     margin: 0;

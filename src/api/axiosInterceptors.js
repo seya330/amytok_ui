@@ -24,9 +24,11 @@ export function setInterceptors(instance) {
         deleteCookie('amyutok_user');
         deleteCookie('amyutok_uniqId');
         deleteCookie('amyutok_isLogin');
-        router.push('/');
+        router.push('/login');
         store.commit('loginInfoRefresh');
-        store.commit('modalOpen', '로그인 시간이 만료 되었습니다.');
+        store.commit('modalOpen', {
+          message: '로그인 시간이 만료 되었습니다.',
+        });
       }
       return Promise.reject(error);
     },

@@ -75,7 +75,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .chat-list {
   font-family: Cafe24Dangdanghae;
 }

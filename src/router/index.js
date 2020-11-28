@@ -36,6 +36,16 @@ const router = new VueRouter({
       component: () => import('@/views/SignUp.vue'),
     },
     {
+      path: '/topicChat',
+      component: () => import('@/views/TopicChat.vue'),
+      meta: { auth: true },
+    },
+    {
+      path: '/topicChatRoom/:chatRoomId',
+      component: () => import('@/views/TopicChatRoom.vue'),
+      meta: { auth: true },
+    },
+    {
       path: '*',
       component: () => import('@/views/PageNotFound.vue'),
     },
@@ -49,7 +59,7 @@ router.beforeEach((to, from, next) => {
     ws.disconnect();
   }
   if (to.meta.auth && !store.state.isLogin) {
-    store.commit('modalOpen', '로그인이 필요합니다.');
+    store.commit('modalOpen', { message: '로그인이 필요합니다.' });
     next('/login');
     return;
   }
